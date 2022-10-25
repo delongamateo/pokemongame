@@ -4,3 +4,8 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+export const CardsContainer = styled.div`
+  display: flex;
+  
+`

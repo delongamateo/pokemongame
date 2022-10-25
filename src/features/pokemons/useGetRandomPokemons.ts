@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { useQuery } from "react-query";
 import { PokeAPI } from "pokeapi-types";
 import { setPokemonOne, selectPokemonOne } from "./pokemonOneSlice";
@@ -23,6 +23,7 @@ const useGetRandomPokemons = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const fetchPokemon = async (id: number) => {
     const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -39,6 +40,7 @@ const useGetRandomPokemons = () => {
       },
       onSuccess: (data) => {
         dispatch(setPokemonOne(data));
+        setEnabled(false);
       },
       enabled: enabled,
       retry: 1,
@@ -54,6 +56,7 @@ const useGetRandomPokemons = () => {
       },
       onSuccess: (data) => {
         dispatch(setPokemonTwo(data));
+        setEnabled(false);
       },
       enabled: enabled,
       retry: 1,
@@ -73,10 +76,12 @@ const useGetRandomPokemons = () => {
   const pokemonTwo = useAppSelector(selectPokemonTwo);
 
   useEffect(() => {
-    if (pokemonOne && pokemonTwo) {
+    console.log(pathname);
+    if (pokemonOne && pokemonTwo && enabled === false && pathname === "/") {
+      console.log("aa");
       navigate("/game");
     }
-  }, [pokemonOne, pokemonTwo]);
+  }, [pokemonOne, pokemonTwo, pathname]);
 
   return setEnabled;
 };
