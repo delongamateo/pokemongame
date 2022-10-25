@@ -1,14 +1,14 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
-import { pokemonApi } from "../features/pokemons/pokemonAPI";
+import pokemonOneReducer from "../features/pokemons/pokemonOneSlice";
+import pokemonTwoReducer from "../features/pokemons/pokemonTwoSlice";
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
-    [pokemonApi.reducerPath]: pokemonApi.reducer,
+    pokemonOne: pokemonOneReducer,
+    pokemonTwo: pokemonTwoReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(pokemonApi.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

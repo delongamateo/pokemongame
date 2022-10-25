@@ -1,23 +1,35 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { useGetPokemonByIDQuery } from './features/pokemons/pokemonAPI';
+import { useAppSelector, useAppDispatch } from "./app/hooks"
+
+import { QueryClient, QueryClientProvider } from "react-query";
+import {
+  selectPokemonOne,
+} from "./features/pokemons/pokemonOneSlice";
+import {
+  selectPokemonTwo,
+} from "./features/pokemons/pokemonTwoSlice";
 import styled from "styled-components"
-import Home from "./components/Home"
+import Home from "./components/Home/Home"
 
 const App = () => {
+  const queryClient = new QueryClient();
+  const pokemonOne = useAppSelector(selectPokemonOne)
+  const pokemonTwo = useAppSelector(selectPokemonTwo)
 
-  const {
-    data: pokemon
-  } = useGetPokemonByIDQuery("1");
-
-  useEffect(() => console.log(pokemon))
+  useEffect(() => {
+    console.log(pokemonOne, pokemonTwo)
+  }, [pokemonTwo, pokemonOne])
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
-    </>
+      <p>{pokemonOne?.name}</p>
+      <p>{pokemonTwo?.name}</p>
+    </QueryClientProvider>
+
   );
 }
 
