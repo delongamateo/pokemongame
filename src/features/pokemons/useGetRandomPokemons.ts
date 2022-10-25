@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useNavigate } from "react-router";
 import { useQuery } from "react-query";
 import { PokeAPI } from "pokeapi-types";
-import { setPokemonOne } from "./pokemonOneSlice";
-import { setPokemonTwo } from "./pokemonTwoSlice";
+import { setPokemonOne, selectPokemonOne } from "./pokemonOneSlice";
+import { setPokemonTwo, selectPokemonTwo } from "./pokemonTwoSlice";
 
 const useGetRandomPokemons = () => {
   const [pokemonOneID, setPokemonOneID] = useState<number>(
@@ -12,6 +13,7 @@ const useGetRandomPokemons = () => {
   const [pokemonTwoID, setPokemonTwoID] = useState<number>(
     Math.floor(Math.random() * 1154)
   );
+  const [enabled, setEnabled] = useState<boolean>(false);
 
   useEffect(() => {
     if (pokemonOneID === pokemonTwoID) {
@@ -20,6 +22,7 @@ const useGetRandomPokemons = () => {
   }, [pokemonOneID, pokemonTwoID]);
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const fetchPokemon = async (id: number) => {
     const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -37,6 +40,8 @@ const useGetRandomPokemons = () => {
       onSuccess: (data) => {
         dispatch(setPokemonOne(data));
       },
+      enabled: enabled,
+      retry: 1,
     }
   );
 
@@ -50,6 +55,8 @@ const useGetRandomPokemons = () => {
       onSuccess: (data) => {
         dispatch(setPokemonTwo(data));
       },
+      enabled: enabled,
+      retry: 1,
     }
   );
 
@@ -61,6 +68,17 @@ const useGetRandomPokemons = () => {
       refetchPokemonTwo();
     }
   }, [isPokemonTwoError, isPokemonOneError]);
+
+  const pokemonOne = useAppSelector(selectPokemonOne);
+  const pokemonTwo = useAppSelector(selectPokemonTwo);
+
+  useEffect(() => {
+    if (pokemonOne && pokemonTwo) {
+      navigate("/game");
+    }
+  }, [pokemonOne, pokemonTwo]);
+
+  return setEnabled;
 };
 
 export default useGetRandomPokemons;
