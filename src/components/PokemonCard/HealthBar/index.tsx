@@ -1,16 +1,24 @@
-import {FC} from 'react'
-import {Container, Value, Bar} from "./style"
+import { FC, useState } from 'react'
+import { Container, Value, Bar } from "./style"
+
 
 type HealthBarProps = {
-    value: number;
+  health: number;
+  startHealth: number;
 }
 
-const HealthBar: FC<HealthBarProps> = ({value}) => {
+const HealthBar: FC<HealthBarProps> = ({ health, startHealth }) => {
+  const [healthPercentage, setHealthPercentage] = useState<number>(100)
+
+  const calculatePercentage = () => {
+    
+  }
+
   return (
-   <Container>
-    <Value>{value}</Value>
-    <Bar value={value} />
-   </Container>
+    <Container>
+      <Value health={health}>{`${health} %`}</Value>
+      <Bar health={health} />
+    </Container>
   )
 }
 

@@ -5,14 +5,15 @@ import HealthBar from "./HealthBar"
 
 type PokemonCardProps = {
     pokemon: PokeAPI.Pokemon
+    health: number;
 }
 
-const PokemonCard: FC<PokemonCardProps> = ({ pokemon }) => {
+const PokemonCard: FC<PokemonCardProps> = ({ pokemon, health }) => {
     const { name, sprites, stats } = pokemon
 
     return (
         <Card>
-            <HealthBar value={stats[0].base_stat} />
+            <HealthBar health={health} startHealth={stats[0].base_stat}/>
             <Name>{name}</Name>
             <Image src={sprites?.front_default} />
             <Stats>
