@@ -3,7 +3,7 @@ import { Container, CardsContainer, AttackContainer, Arrow, BottomContainer } fr
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { selectPokemonOne, selectPokemonOneHealth, setPokemonOneHealth } from '../../features/pokemons/pokemonOneSlice'
 import { selectPokemonTwo, selectPokemonTwoHealth, setPokemonTwoHealth } from '../../features/pokemons/pokemonTwoSlice'
-import { addLog } from '../../features/logs/logsSlice'
+import { addLog, setLastLog } from '../../features/logs/logsSlice'
 import PokemonCard from '../PokemonCard'
 import Button from '../Button'
 import Menu from '../Menu'
@@ -12,6 +12,7 @@ import EndGameScreen from '../EndGameScreen'
 
 const Game = () => {
   const [isAttacking, setIsAttacking] = useState<string>()
+  const [isAttackInProgress, setIsAttackInProgress] = useState<boolean>(false)
 
   const pokemonOne = useAppSelector(selectPokemonOne);
   const pokemonTwo = useAppSelector(selectPokemonTwo);
@@ -34,33 +35,49 @@ const Game = () => {
   const handleAttack = () => {
     if (!pokemonOneStats || !pokemonTwoStats) return;
     if (isAttacking === "left") {
-      if (Math.floor(Math.random() * 9) >= 2) {
-        const damage = (pokemonOneStats[1].base_stat / 2) - (pokemonOneStats[1].base_stat / 2 * pokemonTwoStats[2].base_stat / 100)
-        const newHealth = pokemonTwoHealth - damage
-        dispatch(setPokemonTwoHealth(newHealth < 0 ? 0 : newHealth))
-        dispatch(addLog(`${pokemonOne?.name} attacked ${pokemonTwo?.name} for ${damage}dmg`))
-        if (newHealth <= 0) {
-          dispatch(addLog(`${pokemonOne?.name} won!`))
-
+      setIsAttackInProgress(true)
+      setTimeout(() => {
+        if (Math.floor(Math.random() * 9) >= 2) {
+          const damage = (pokemonOneStats[1].base_stat / 2) - (pokemonOneStats[1].base_stat / 2 * pokemonTwoStats[2].base_stat / 100)
+          const newHealth = pokemonTwoHealth - damage
+          dispatch(setPokemonTwoHealth(newHealth < 0 ? 0 : newHealth))
+          dispatch(addLog(`${pokemonOne?.name} attacked ${pokemonTwo?.name} for ${damage}dmg`))
+          dispatch(setLastLog(`${damage}dmg`))
+          if (newHealth <= 0) {
+            dispatch(addLog(`${pokemonOne?.name} won!`))
+          }
+        } else {
+          dispatch(addLog(`${pokemonOne?.name} missed ${pokemonTwo?.name}`))
+          dispatch(setLastLog("Miss"))
         }
-      } else {
-        dispatch(addLog(`${pokemonOne?.name} missed ${pokemonTwo?.name}`))
-      }
-      setIsAttacking("right")
+        setTimeout(() => {
+          setIsAttacking("right")
+          setIsAttackInProgress(false)
+          dispatch(setLastLog(""))
+        }, 1000)
+      }, 1000)
     } else {
-      if (Math.floor(Math.random() * 9) >= 2) {
-        const damage = (pokemonTwoStats[1].base_stat / 2) - (pokemonTwoStats[1].base_stat / 2 * pokemonOneStats[2].base_stat / 100)
-        const newHealth = pokemonOneHealth - damage
-        dispatch(setPokemonOneHealth(newHealth < 0 ? 0 : newHealth))
-        dispatch(addLog(`${pokemonTwo?.name} attacked ${pokemonOne?.name} for ${damage}dmg`))
-        if (newHealth <= 0) {
-          dispatch(addLog(`${pokemonTwo?.name} won!`))
-
+      setIsAttackInProgress(true)
+      setTimeout(() => {
+        if (Math.floor(Math.random() * 9) >= 2) {
+          const damage = (pokemonTwoStats[1].base_stat / 2) - (pokemonTwoStats[1].base_stat / 2 * pokemonOneStats[2].base_stat / 100)
+          const newHealth = pokemonOneHealth - damage
+          dispatch(setPokemonOneHealth(newHealth < 0 ? 0 : newHealth))
+          dispatch(addLog(`${pokemonTwo?.name} attacked ${pokemonOne?.name} for ${damage}dmg`))
+          dispatch(setLastLog(`${damage}dmg`))
+          if (newHealth <= 0) {
+            dispatch(addLog(`${pokemonTwo?.name} won!`))
+          }
+        } else {
+          dispatch(addLog(`${pokemonTwo?.name} missed ${pokemonOne?.name}`))
+          dispatch(setLastLog("Miss"))
         }
-      } else {
-        dispatch(addLog(`${pokemonTwo?.name} missed ${pokemonOne?.name}`))
-      }
-      setIsAttacking("left")
+        setTimeout(() => {
+          setIsAttacking("left")
+          setIsAttackInProgress(false)
+          dispatch(setLastLog(""))
+        }, 1000)
+      }, 1000)
     }
   }
 
@@ -71,12 +88,12 @@ const Game = () => {
   return (
     <Container>
       <CardsContainer>
-        <PokemonCard pokemon={pokemonOne} health={pokemonOneHealth} />
+        <PokemonCard pokemon={pokemonOne} health={pokemonOneHealth} side="left" isAttacking={isAttacking} isAttackInProgress={isAttackInProgress} />
         <AttackContainer>
           <Arrow src="/assets/arrow.svg" side={isAttacking} />
-          <Button onClick={() => handleAttack()} title="Attack!" />
+          <Button onClick={() => handleAttack()} title="Attack!" isDisabled={isAttackInProgress} />
         </AttackContainer>
-        <PokemonCard pokemon={pokemonTwo} health={pokemonTwoHealth} />
+        <PokemonCard pokemon={pokemonTwo} health={pokemonTwoHealth} side="right" isAttacking={isAttacking} isAttackInProgress={isAttackInProgress} />
       </CardsContainer>
       <BottomContainer>
         {pokemonOneHealth > 0 && pokemonTwoHealth > 0 && <Menu />}

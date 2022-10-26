@@ -40,39 +40,39 @@ const useGetRandomPokemons = () => {
     return pokemon as PokeAPI.Pokemon;
   };
 
-  const { isError: isPokemonOneError, refetch: refetchPokemonOne } = useQuery(
-    "pokemonOne",
-    () => fetchPokemon(pokemonOneID),
-    {
-      onError: () => {
-        setPokemonOneID(Math.floor(Math.random() * 1154));
-        refetchPokemonOne();
-      },
-      onSuccess: (data) => {
-        dispatch(setPokemonOne(data));
-        dispatch(setPokemonOneHealth(data.stats[0].base_stat));
-      },
-      enabled: false,
-      retry: 1,
-    }
-  );
+  const {
+    isError: isPokemonOneError,
+    refetch: refetchPokemonOne,
+    isLoading: isPokemonOneLoading,
+  } = useQuery("pokemonOne", () => fetchPokemon(pokemonOneID), {
+    onError: () => {
+      setPokemonOneID(Math.floor(Math.random() * 1154));
+      refetchPokemonOne();
+    },
+    onSuccess: (data) => {
+      dispatch(setPokemonOne(data));
+      dispatch(setPokemonOneHealth(data.stats[0].base_stat));
+    },
+    enabled: false,
+    retry: 1,
+  });
 
-  const { isError: isPokemonTwoError, refetch: refetchPokemonTwo } = useQuery(
-    "pokemonTwo",
-    () => fetchPokemon(pokemonTwoID),
-    {
-      onError: () => {
-        setPokemonTwoID(Math.floor(Math.random() * 1154));
-        refetchPokemonTwo();
-      },
-      onSuccess: (data) => {
-        dispatch(setPokemonTwo(data));
-        dispatch(setPokemonTwoHealth(data.stats[0].base_stat));
-      },
-      enabled: false,
-      retry: 1,
-    }
-  );
+  const {
+    isError: isPokemonTwoError,
+    refetch: refetchPokemonTwo,
+    isLoading: isPokemonTwoLoading,
+  } = useQuery("pokemonTwo", () => fetchPokemon(pokemonTwoID), {
+    onError: () => {
+      setPokemonTwoID(Math.floor(Math.random() * 1154));
+      refetchPokemonTwo();
+    },
+    onSuccess: (data) => {
+      dispatch(setPokemonTwo(data));
+      dispatch(setPokemonTwoHealth(data.stats[0].base_stat));
+    },
+    enabled: false,
+    retry: 1,
+  });
 
   useEffect(() => {
     if (isPokemonOneError) {
@@ -118,7 +118,7 @@ const useGetRandomPokemons = () => {
     }
   };
 
-  return { newGame, newOpponent };
+  return { newGame, newOpponent, isPokemonOneLoading, isPokemonTwoLoading };
 };
 
 export default useGetRandomPokemons;
