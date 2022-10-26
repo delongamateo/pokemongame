@@ -76,9 +76,8 @@ const useGetRandomPokemons = () => {
   const pokemonTwo = useAppSelector(selectPokemonTwo);
 
   useEffect(() => {
-    console.log(pathname);
+    /* ne radi */
     if (pokemonOne && pokemonTwo && enabled === false && pathname === "/") {
-      console.log("aa");
       navigate("/game");
     }
   }, [pokemonOne, pokemonTwo, pathname]);

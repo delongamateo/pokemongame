@@ -11,8 +11,8 @@ const HealthBar: FC<HealthBarProps> = ({ health, startHealth }) => {
   const [healthPercentage, setHealthPercentage] = useState<number>(100)
 
   useEffect(() => {
-    setHealthPercentage((health / startHealth) * 100)
-  },[startHealth,health,setHealthPercentage])
+    setHealthPercentage(Math.floor((health / startHealth) * 100))
+  }, [startHealth, health, setHealthPercentage])
 
   return (
     <Container>

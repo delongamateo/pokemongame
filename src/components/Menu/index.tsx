@@ -1,5 +1,6 @@
 import {FC} from 'react'
-import { Container } from "./style"
+import { Container, Title,  ButtonsContainer} from "./style"
+import Button from "../Button"
 
 type MenuProps = {
 
@@ -7,7 +8,14 @@ type MenuProps = {
 
 const Menu: FC<MenuProps> = () => {
     return (
-        <Container>Menu</Container>
+        <Container>
+            <Title>Menu</Title>
+            <ButtonsContainer>
+                <Button title='Home' onClick={() => console.log("")}/>
+                <Button title='New Game' onClick={() => console.log("")}/>
+                <Button title='New opponent' onClick={() => console.log("")}/>
+            </ButtonsContainer>
+        </Container>
     )
 }
 
