@@ -24,8 +24,6 @@ const Game = () => {
 
   useEffect(() => {
     if (!pokemonOneStats || !pokemonTwoStats) return;
-    dispatch(setPokemonOneHealth(pokemonOneStats[0].base_stat))
-    dispatch(setPokemonTwoHealth(pokemonTwoStats[0].base_stat))
     if (pokemonOneStats[5].base_stat > pokemonTwoStats[5].base_stat) {
       setIsAttacking("left")
     } else {
@@ -41,32 +39,30 @@ const Game = () => {
         const newHealth = pokemonTwoHealth - damage
         dispatch(setPokemonTwoHealth(newHealth < 0 ? 0 : newHealth))
         dispatch(addLog(`${pokemonOne?.name} attacked ${pokemonTwo?.name} for ${damage}dmg`))
-        setIsAttacking("right")
-        if(newHealth <= 0) {
-          dispatch(addLog(`${pokemonOne} won!`))
-          
+        if (newHealth <= 0) {
+          dispatch(addLog(`${pokemonOne?.name} won!`))
+
         }
       } else {
         dispatch(addLog(`${pokemonOne?.name} missed ${pokemonTwo?.name}`))
       }
+      setIsAttacking("right")
     } else {
       if (Math.floor(Math.random() * 9) >= 2) {
         const damage = (pokemonTwoStats[1].base_stat / 2) - (pokemonTwoStats[1].base_stat / 2 * pokemonOneStats[2].base_stat / 100)
         const newHealth = pokemonOneHealth - damage
         dispatch(setPokemonOneHealth(newHealth < 0 ? 0 : newHealth))
         dispatch(addLog(`${pokemonTwo?.name} attacked ${pokemonOne?.name} for ${damage}dmg`))
-        setIsAttacking("left")
-        if(newHealth <= 0) {
-          dispatch(addLog(`${pokemonTwo} won!`))
-          
+        if (newHealth <= 0) {
+          dispatch(addLog(`${pokemonTwo?.name} won!`))
+
         }
       } else {
         dispatch(addLog(`${pokemonTwo?.name} missed ${pokemonOne?.name}`))
       }
+      setIsAttacking("left")
     }
   }
-
-  useEffect(() => console.log(pokemonOneHealth, pokemonTwoHealth), [pokemonTwoHealth, pokemonOneHealth])
 
   if (!pokemonOne || !pokemonTwo) return (
     <p>Loading</p>
@@ -77,7 +73,6 @@ const Game = () => {
       <CardsContainer>
         <PokemonCard pokemon={pokemonOne} health={pokemonOneHealth} />
         <AttackContainer>
-          {/* testiraj strelicu */}
           <Arrow src="/assets/arrow.svg" side={isAttacking} />
           <Button onClick={() => handleAttack()} title="Attack!" />
         </AttackContainer>
@@ -87,7 +82,7 @@ const Game = () => {
         {pokemonOneHealth > 0 && pokemonTwoHealth > 0 && <Menu />}
         <Logs />
       </BottomContainer>
-      {pokemonOneHealth === 0 || pokemonTwoHealth === 0 && <EndGameScreen />}
+      {!(pokemonOneHealth > 0 && pokemonTwoHealth > 0) && <EndGameScreen />}
     </Container>
   )
 }

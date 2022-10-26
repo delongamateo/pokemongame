@@ -16,10 +16,11 @@ export const logsSlice = createSlice({
     addLog: (state, action: PayloadAction<string>) => {
       state.logs = [...state.logs, action.payload];
     },
+    clearLogs: (state) => { state.logs = [] },
   },
 });
 
-export const { addLog } = logsSlice.actions;
+export const { addLog, clearLogs } = logsSlice.actions;
 
 export const selectLogs = (state: RootState) => state.logs.logs;
 

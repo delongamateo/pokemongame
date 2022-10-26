@@ -3,8 +3,18 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { useNavigate, useLocation } from "react-router";
 import { useQuery } from "react-query";
 import { PokeAPI } from "pokeapi-types";
-import { setPokemonOne, selectPokemonOne } from "./pokemonOneSlice";
-import { setPokemonTwo, selectPokemonTwo } from "./pokemonTwoSlice";
+import {
+  setPokemonOne,
+  selectPokemonOne,
+  setPokemonOneHealth,
+  selectPokemonOneHealth,
+} from "./pokemonOneSlice";
+import {
+  setPokemonTwo,
+  selectPokemonTwo,
+  setPokemonTwoHealth,
+} from "./pokemonTwoSlice";
+import { clearLogs } from "../logs/logsSlice";
 
 const useGetRandomPokemons = () => {
   const [pokemonOneID, setPokemonOneID] = useState<number>(
@@ -13,7 +23,6 @@ const useGetRandomPokemons = () => {
   const [pokemonTwoID, setPokemonTwoID] = useState<number>(
     Math.floor(Math.random() * 1154)
   );
-  const [enabled, setEnabled] = useState<boolean>(false);
 
   useEffect(() => {
     if (pokemonOneID === pokemonTwoID) {
@@ -37,12 +46,13 @@ const useGetRandomPokemons = () => {
     {
       onError: () => {
         setPokemonOneID(Math.floor(Math.random() * 1154));
+        refetchPokemonOne();
       },
       onSuccess: (data) => {
         dispatch(setPokemonOne(data));
-        setEnabled(false);
+        dispatch(setPokemonOneHealth(data.stats[0].base_stat));
       },
-      enabled: enabled,
+      enabled: false,
       retry: 1,
     }
   );
@@ -53,12 +63,13 @@ const useGetRandomPokemons = () => {
     {
       onError: () => {
         setPokemonTwoID(Math.floor(Math.random() * 1154));
+        refetchPokemonTwo();
       },
       onSuccess: (data) => {
         dispatch(setPokemonTwo(data));
-        setEnabled(false);
+        dispatch(setPokemonTwoHealth(data.stats[0].base_stat));
       },
-      enabled: enabled,
+      enabled: false,
       retry: 1,
     }
   );
@@ -77,12 +88,37 @@ const useGetRandomPokemons = () => {
 
   useEffect(() => {
     /* ne radi */
-    if (pokemonOne && pokemonTwo && enabled === false && pathname === "/") {
+    if (pokemonOne && pokemonTwo && pathname === "/") {
       navigate("/game");
     }
   }, [pokemonOne, pokemonTwo, pathname]);
 
-  return setEnabled;
+  const newGame = () => {
+    setPokemonOneID(Math.floor(Math.random() * 1154));
+    setPokemonTwoID(Math.floor(Math.random() * 1154));
+    dispatch(clearLogs());
+    refetchPokemonOne();
+    refetchPokemonTwo();
+  };
+
+  const pokemonOneHealth = useAppSelector(selectPokemonOneHealth);
+
+  const newOpponent = () => {
+    const newID = Math.floor(Math.random() * 1000) + 1;
+    if (pokemonOneHealth === 0) {
+      setPokemonOneID(newID === pokemonTwoID ? newID - 1 : newID);
+      refetchPokemonOne();
+      if (!pokemonTwo) return;
+      dispatch(setPokemonTwoHealth(pokemonTwo.stats[0].base_stat));
+    } else {
+      setPokemonTwoID(newID === pokemonOneID ? newID - 1 : newID);
+      refetchPokemonTwo();
+      if (!pokemonOne) return;
+      dispatch(setPokemonOneHealth(pokemonOne.stats[0].base_stat));
+    }
+  };
+
+  return { newGame, newOpponent };
 };
 
 export default useGetRandomPokemons;

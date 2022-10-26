@@ -6,9 +6,14 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   height: 100vh;
   width: 100%;
 `;
 
-export const Title = styled.h1``;
+export const Title = styled.h1`
+  margin-top: 2em;
+  font-size: 4em;
+  ::first-letter {
+    text-transform: capitalize;
+  }
+`;

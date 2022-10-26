@@ -6,7 +6,7 @@ import Button from "../Button"
 type HomeProps = {}
 
 const Home: FC<HomeProps> = () => {
-  const setEnabled = useGetRandomPokemons()
+  const {newGame} = useGetRandomPokemons()
 
   return (
     <Container>
@@ -14,7 +14,7 @@ const Home: FC<HomeProps> = () => {
         <Logo src='/assets/Kodi-logo.svg' />
         <LogoTitle src='/assets/kodimon.png' />
       </LogoContainer>
-      <Button onClick={() => setEnabled(true)} title="New Game" />
+      <Button onClick={() => newGame()} title="New Game" />
     </Container>
   )
 }
