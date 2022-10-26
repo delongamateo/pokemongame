@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Container, Value, Bar } from "./style"
 
 
@@ -10,14 +10,14 @@ type HealthBarProps = {
 const HealthBar: FC<HealthBarProps> = ({ health, startHealth }) => {
   const [healthPercentage, setHealthPercentage] = useState<number>(100)
 
-  const calculatePercentage = () => {
-    
-  }
+  useEffect(() => {
+    setHealthPercentage((health / startHealth) * 100)
+  },[startHealth,health,setHealthPercentage])
 
   return (
     <Container>
-      <Value health={health}>{`${health} %`}</Value>
-      <Bar health={health} />
+      <Value health={healthPercentage}>{`${healthPercentage} %`}</Value>
+      <Bar health={healthPercentage} />
     </Container>
   )
 }

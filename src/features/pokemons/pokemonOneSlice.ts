@@ -10,7 +10,7 @@ export interface pokemonOneState {
 
 const initialState: pokemonOneState = {
   value: undefined,
-  health: 100,
+  health: 0,
   isAttacking: false,
 };
 

@@ -10,7 +10,7 @@ export interface pokemonTwoState {
 
 const initialState: pokemonTwoState = {
   value: undefined,
-  health: 100,
+  health: 0,
   isAttacking: false,
 };
 

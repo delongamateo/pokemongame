@@ -18,7 +18,12 @@ export const AttackContainer = styled.div`
   justify-content: center;
 `;
 
-export const Arrow = styled.img`
+type ArrowProps = {
+  side: string;
+};
+
+export const Arrow = styled.img<ArrowProps>`
   height: 2em;
   margin-bottom: 0.5em;
+  rotate: ${(props) => (props.side === "left" ? 0 : 180)}deg;
 `;
