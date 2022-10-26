@@ -5,13 +5,11 @@ import { RootState } from "../../app/store";
 export interface pokemonTwoState {
   value: PokeAPI.Pokemon | undefined;
   health: number;
-  isAttacking: boolean;
 }
 
 const initialState: pokemonTwoState = {
   value: undefined,
   health: 0,
-  isAttacking: false,
 };
 
 export const pokemonTwoSlice = createSlice({
@@ -24,21 +22,15 @@ export const pokemonTwoSlice = createSlice({
     setPokemonTwoHealth: (state, action: PayloadAction<number>) => {
       state.health = action.payload;
     },
-    setIsPokemonTwoAttacking: (state, action: PayloadAction<boolean>) => {
-      state.isAttacking = action.payload;
-    },
   },
 });
 
-export const { setPokemonTwo, setPokemonTwoHealth, setIsPokemonTwoAttacking } =
+export const { setPokemonTwo, setPokemonTwoHealth } =
   pokemonTwoSlice.actions;
 
 export const selectPokemonTwo = (state: RootState) => state.pokemonTwo.value;
 
 export const selectPokemonTwoHealth = (state: RootState) =>
   state.pokemonTwo.health;
-
-export const selectIsPokemonTwoAttacking = (state: RootState) =>
-  state.pokemonTwo.isAttacking;
 
 export default pokemonTwoSlice.reducer;

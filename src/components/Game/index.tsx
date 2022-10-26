@@ -1,19 +1,18 @@
 import { FC, useEffect, useState } from 'react'
 import { Container, CardsContainer, AttackContainer, Arrow } from "./style"
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { selectPokemonOne, selectPokemonOneHealth, setPokemonOneHealth, selectIsPokemonOneAttacking, setIsPokemonOneAttacking } from '../../features/pokemons/pokemonOneSlice'
-import { selectPokemonTwo, selectPokemonTwoHealth, setIsPokemonTwoAttacking, selectIsPokemonTwoAttacking, setPokemonTwoHealth } from '../../features/pokemons/pokemonTwoSlice'
+import { selectPokemonOne, selectPokemonOneHealth, setPokemonOneHealth } from '../../features/pokemons/pokemonOneSlice'
+import { selectPokemonTwo, selectPokemonTwoHealth, setPokemonTwoHealth } from '../../features/pokemons/pokemonTwoSlice'
 import PokemonCard from '../PokemonCard'
 import Button from '../Button'
 
 const Game = () => {
-  const [isAttacking, setIsAttacking] = useState<string>("right")
+  const [isAttacking, setIsAttacking] = useState<string>()
+
   const pokemonOne = useAppSelector(selectPokemonOne);
   const pokemonTwo = useAppSelector(selectPokemonTwo);
   const pokemonOneHealth = useAppSelector(selectPokemonOneHealth);
   const pokemonTwoHealth = useAppSelector(selectPokemonTwoHealth);
-  const oneattacking = useAppSelector(selectIsPokemonOneAttacking)
-  const twoattacking = useAppSelector(selectIsPokemonTwoAttacking)
   const dispatch = useAppDispatch()
 
   const { stats: pokemonOneStats } = pokemonOne ?? {}
@@ -32,18 +31,16 @@ const Game = () => {
 
   const handleAttack = () => {
     if (!pokemonOneStats || !pokemonTwoStats) return;
-    console.log("aa")
     if (isAttacking === "left") {
-      console.log("ff")
-      dispatch(setPokemonTwoHealth(pokemonTwoHealth - ((pokemonOneStats[1].base_stat / 2) * (pokemonTwoStats[2].base_stat / 100))))
+      dispatch(setPokemonTwoHealth(pokemonTwoHealth - ((pokemonOneStats[1].base_stat / 2) - (pokemonOneStats[1].base_stat / 2 * pokemonTwoStats[2].base_stat / 100))))
       setIsAttacking("right")
     } else {
-      dispatch(setPokemonOneHealth(pokemonOneHealth - ((pokemonTwoStats[1].base_stat / 2) * (pokemonOneStats[2].base_stat / 100))))
+      dispatch(setPokemonOneHealth(pokemonOneHealth - ((pokemonTwoStats[1].base_stat / 2) - (pokemonTwoStats[1].base_stat / 2 * pokemonOneStats[2].base_stat / 100))))
       setIsAttacking("left")
     }
   }
 
-  useEffect(() => console.log(isAttacking), [isAttacking])
+  useEffect(() => console.log(pokemonOneHealth, pokemonTwoHealth), [pokemonTwoHealth, pokemonOneHealth])
 
   if (!pokemonOne || !pokemonTwo) return (
     <p>Loading</p>
