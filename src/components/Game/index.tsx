@@ -42,6 +42,10 @@ const Game = () => {
         dispatch(setPokemonTwoHealth(newHealth < 0 ? 0 : newHealth))
         dispatch(addLog(`${pokemonOne?.name} attacked ${pokemonTwo?.name} for ${damage}dmg`))
         setIsAttacking("right")
+        if(newHealth <= 0) {
+          dispatch(addLog(`${pokemonOne} won!`))
+          
+        }
       } else {
         dispatch(addLog(`${pokemonOne?.name} missed ${pokemonTwo?.name}`))
       }
@@ -52,6 +56,10 @@ const Game = () => {
         dispatch(setPokemonOneHealth(newHealth < 0 ? 0 : newHealth))
         dispatch(addLog(`${pokemonTwo?.name} attacked ${pokemonOne?.name} for ${damage}dmg`))
         setIsAttacking("left")
+        if(newHealth <= 0) {
+          dispatch(addLog(`${pokemonTwo} won!`))
+          
+        }
       } else {
         dispatch(addLog(`${pokemonTwo?.name} missed ${pokemonOne?.name}`))
       }
@@ -76,10 +84,10 @@ const Game = () => {
         <PokemonCard pokemon={pokemonTwo} health={pokemonTwoHealth} />
       </CardsContainer>
       <BottomContainer>
-        <Menu />
+        {pokemonOneHealth > 0 && pokemonTwoHealth > 0 && <Menu />}
         <Logs />
       </BottomContainer>
-      <EndGameScreen />
+      {pokemonOneHealth === 0 || pokemonTwoHealth === 0 && <EndGameScreen />}
     </Container>
   )
 }
