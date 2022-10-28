@@ -16,7 +16,7 @@ export const pokemonOneSlice = createSlice({
   name: "pokemonOne",
   initialState,
   reducers: {
-    setPokemonOne: (state, action: PayloadAction<PokeAPI.Pokemon>) => {
+    setPokemonOne: (state, action: PayloadAction<PokeAPI.Pokemon | undefined>) => {
       state.value = action.payload;
     },
     setPokemonOneHealth: (state, action: PayloadAction<number>) => {

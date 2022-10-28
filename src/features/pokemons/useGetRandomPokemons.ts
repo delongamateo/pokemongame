@@ -43,7 +43,7 @@ const useGetRandomPokemons = () => {
   const {
     isError: isPokemonOneError,
     refetch: refetchPokemonOne,
-    isLoading: isPokemonOneLoading,
+    isFetching: isPokemonOneFetching,
   } = useQuery("pokemonOne", () => fetchPokemon(pokemonOneID), {
     onError: () => {
       setPokemonOneID(Math.floor(Math.random() * 1154));
@@ -60,7 +60,7 @@ const useGetRandomPokemons = () => {
   const {
     isError: isPokemonTwoError,
     refetch: refetchPokemonTwo,
-    isLoading: isPokemonTwoLoading,
+    isFetching: isPokemonTwoFetching,
   } = useQuery("pokemonTwo", () => fetchPokemon(pokemonTwoID), {
     onError: () => {
       setPokemonTwoID(Math.floor(Math.random() * 1154));
@@ -87,13 +87,14 @@ const useGetRandomPokemons = () => {
   const pokemonTwo = useAppSelector(selectPokemonTwo);
 
   useEffect(() => {
-    /* ne radi */
     if (pokemonOne && pokemonTwo && pathname === "/") {
       navigate("/game");
     }
   }, [pokemonOne, pokemonTwo, pathname]);
 
   const newGame = () => {
+    setPokemonOne(undefined);
+    setPokemonTwo(undefined);
     setPokemonOneID(Math.floor(Math.random() * 1154));
     setPokemonTwoID(Math.floor(Math.random() * 1154));
     dispatch(clearLogs());
@@ -118,7 +119,7 @@ const useGetRandomPokemons = () => {
     }
   };
 
-  return { newGame, newOpponent, isPokemonOneLoading, isPokemonTwoLoading };
+  return { newGame, newOpponent, isPokemonOneFetching, isPokemonTwoFetching };
 };
 
 export default useGetRandomPokemons;

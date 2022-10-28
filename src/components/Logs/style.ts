@@ -18,7 +18,7 @@ export const LogsContainer = styled.div`
   padding: 0.5em;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 10em;
   max-height: 10em;
   overflow-y: scroll;
 `;

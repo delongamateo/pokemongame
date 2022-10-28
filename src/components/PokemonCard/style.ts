@@ -1,11 +1,13 @@
-import styled, { Keyframes, keyframes } from "styled-components";
+import styled, { css, Keyframes, keyframes } from "styled-components";
 
 export const Card = styled.div`
   width: 18em;
+  height: 26em;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 `;
 
 export const Name = styled.p`
@@ -15,109 +17,20 @@ export const Name = styled.p`
   }
 `;
 
-const attackOneLeft = keyframes`
-0% {
-  transform: translateX(0%);
-}
-10% {
-  top: -2em;
-}
-20% {
-  top: -4em;
-}
-30% {
-  top: -6em;
-}
-40% {
-  top: -8em;
-}
-50% {
-  top: -10em;
-}
-60% {
-  top: -8em;
-}
-70% {
-  top: -4em;
-}
-80% {
-  top: -4em;
-}
-90% {
-  top; -2em
-}
-100% {
-  transform: translateX(600%);
-}
-`;
-
-const attackOneRight = keyframes`
-0% {
-  transform: translateX(0%);
-}
-10% {
-  top: -2em;
-}
-20% {
-  top: -4em;
-}
-30% {
-  top: -6em;
-}
-40% {
-  top: -8em;
-}
-50% {
-  top: -10em;
-}
-60% {
-  top: -8em;
-}
-70% {
-  top: -4em;
-}
-80% {
-  top: -4em;
-}
-90% {
-  top; -2em
-}
-100% {
-  transform: translateX(-600%);
-}
-`;
-
-const attackTwoRight = keyframes`
-0% {
-  transform: translateX(0%);
-}
-100% {
-  transform: translateX(-600%);
-}
-`;
-
-const attackTwoLeft = keyframes`
-0% {
-  transform: translateX(0%);
-}
-100% {
-  transform: translateX(600%);
-}
-`;
-
 const calculateAnimation = (
-  attackOneLeft: Keyframes,
-  attackOneRight: Keyframes,
-  attackTwoLeft: Keyframes,
-  attackTwoRight: Keyframes,
+  leftAttack: Keyframes,
+  rightAttack: Keyframes,
   side: string,
   isAttacking?: string
 ) => {
-  const animationNumber = Math.floor(Math.random() * 2);
   if (side === "left" && isAttacking === "left") {
-    return animationNumber > 0 ? attackOneLeft : attackTwoLeft;
+    return css`
+      ${rightAttack} 2s ease-in-out;,
+    `;
   } else if (side === "right" && isAttacking === "right") {
-    return animationNumber > 0 ? attackOneRight : attackTwoRight;
+    return css`
+      ${leftAttack} 2s ease-in-out;,
+    `;
   }
 };
 
@@ -132,16 +45,8 @@ export const Image = styled.img<ImageProps>`
   width: 12em;
   height: 10em;
   animation: ${(props) =>
-      props.isAttackInProgress &&
-      calculateAnimation(
-        attackOneLeft,
-        attackOneRight,
-        attackTwoLeft,
-        attackTwoRight,
-        props.side,
-        props.isAttacking
-      )}
-    2s ease;
+    props.isAttackInProgress &&
+    calculateAnimation(leftAttack, rightAttack, props.side, props.isAttacking)};
 `;
 
 export const Stats = styled.div`
@@ -167,5 +72,83 @@ export const Stat = styled.p`
   margin: 0;
   ::first-letter {
     text-transform: capitalize;
+  }
+`;
+
+type LastLogProps = {
+  side: string;
+};
+
+export const LastLog = styled.p<LastLogProps>`
+  position: absolute;
+  font-size: 2em;
+  font-weight: bold;
+  transform: rotate(${(props) => (props.side === "left" ? 30 : -30)}deg);
+  left: ${(props) => (props.side === "left" ? 6 : -2.2)}em;
+  top: 0.5em;
+`;
+
+export const BackImage = styled.img`
+  width: 18em;
+  height: 26em;
+`;
+
+const leftAttack = keyframes`
+0% {
+    left: 0;
+    transform: translateY(-0%);
+    transform: rotateX(180deg)
+  }
+20% {
+  left: 0;
+    transform: translateY(-20%);
+  }
+30% {
+  left: 0;
+    transform: translateY(-30%);
+  }
+40% {
+  left: 0;
+    transform: translateY(-40%);
+  }
+50% {
+  left: 100%;
+    transform: translateX(-600%);
+   
+  }
+100% {
+  left: 0;
+    transform: translateY(0);
+    
+  }
+`;
+
+const rightAttack = keyframes`
+0% {
+    right: 0;
+    transform: translateY(-0%);
+    transform: rotateX(-180deg)
+  }
+20% {
+    right: 0;
+    transform: translateY(-20%);
+  }
+30% {
+    right: 0;
+    transform: translateY(-30%);
+  }
+40% {
+    right: 0;
+    transform: translateY(-40%);
+  }
+50% {
+    right: 100%;
+    transform: translateX(600%);
+   
+  }
+100% {
+    right: 0;
+    transform: translateY(0);
+    
   }
 `;
